@@ -21,7 +21,7 @@ def chat():
 
         emotion = model.predict(vectorizer.transform([message]))
 
-        response = callLLM(message)
+        response = callLLM(message, emotion=emotion[0])
 
         return jsonify({"status":200,"data":response})
       

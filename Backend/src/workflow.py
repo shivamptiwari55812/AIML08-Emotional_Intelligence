@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from pydantic import BaseModel, Field
+from langchain_core.prompts import PromptTemplate
 
 load_dotenv()
 
@@ -96,11 +97,22 @@ Keep responses supportive, intelligent, and academically helpful.
 
 messages = [SystemMessage(content=prompt),]
 
-def callLLM(mes):
+template = """
+user message: {message} \n
+predicted emotion: {emotion}
+"""
+
+userMessageTemplate = PromptTemplate(
+    input_variables=["message", "emotion"],
+    template=template
+)
+
+def callLLM(mes,emotion):
     # append the message into messages
-    messages.append(HumanMessage(content=mes))
+    messages.append(HumanMessage(content=userMessageTemplate.format(message=mes,emotion=emotion)))
     response = structured_llm.invoke(messages)
-    print(response)
+    # response = structured_llm.invoke(messages)
+    # print(response)
     messages.append(AIMessage(content=f"Emotion Detected: {response.emotion}\n\nResponse:\n{response.response}"))
     return response.json()
 
