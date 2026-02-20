@@ -2,7 +2,7 @@ from flask import Flask,request,jsonify
 from flask_cors import CORS
 import pickle
 import pandas as pd
-from Backend.src.workflow import callLLM
+from workflow import callLLM
 
 app = Flask(__name__)
 
