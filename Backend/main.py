@@ -4,15 +4,10 @@ from llm_chain import generate_response
 app = Flask(__name__)
 
 
-# @app.route("/")
-# def login():
-#     return "Hey there"   
 
 
 def predict_emotion(message):
-    vector = vectorizer.transform([message])
-    prediction = model.predict(vector)[0]
-    return prediction
+    return "happy"
 
 
 
@@ -20,11 +15,12 @@ def predict_emotion(message):
 def chat():
     try:
       data = request.json
+      print(data)
       message = data["message"]
 
       emotion = predict_emotion(message)
 
-      
+      print("shivam")
       prompt = f"""
 You are an AI study assistant helping Indian competitive exam students preparing for GATE, UPSC, JEE, and CAT.
 
@@ -62,16 +58,15 @@ Student message:
 
 Now generate the best possible response.
 """
+      print("Shivam2")
       response = generate_response(prompt)
-
+      print("shivam3")
       return jsonify({"status":200,"data":response})
       
       
     except Exception as e:
-        return jsonify({"status":400,"message":"something went wrong"})
-    
-def response(response):
-    return jsonify({"status":200,"data":response})
+     print("ERROR OCCURRED:", str(e))
+     return jsonify({"status":400,"message":str(e)})
 
     
 
