@@ -4,9 +4,9 @@ from llm_chain import generate_response
 app = Flask(__name__)
 
 
-@app.route("/")
-def login():
-    return "Hey there"   
+# @app.route("/")
+# def login():
+#     return "Hey there"   
 
 
 def predict_emotion(message):
@@ -14,7 +14,7 @@ def predict_emotion(message):
     prediction = model.predict(vector)[0]
     return prediction
 
-     
+
 
 @app.route("/chat",methods=["POST"])
 def chat():
@@ -24,7 +24,45 @@ def chat():
 
       emotion = predict_emotion(message)
 
-      response = generate_response(emotion, message)
+      
+      prompt = f"""
+You are an AI study assistant helping Indian competitive exam students preparing for GATE, UPSC, JEE, and CAT.
+
+The detected emotional state of the student is: {emotion}
+
+Adapt your response style based on the emotion:
+
+- If Frustrated:
+  Be supportive, calm, and break the topic into small simple steps.
+
+- If Confused:
+  Give a structured explanation with a simple example.
+
+- If Confident:
+  Provide a deeper explanation or a challenge question.
+
+- If Anxious:
+  Reassure briefly and simplify the explanation.
+
+- If Happy:
+  Maintain positive energy and reinforce learning.
+
+- If Sad:
+  Encourage gently and motivate toward progress.
+
+Rules:
+- Provide academic guidance only.
+- Do NOT provide medical or psychological advice.
+- Keep response clear and structured.
+- Use bullet points when helpful.
+- Be concise but helpful.
+
+Student message:
+"{message}"
+
+Now generate the best possible response.
+"""
+      response = generate_response(prompt)
 
       return jsonify({"status":200,"data":response})
       
