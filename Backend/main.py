@@ -1,10 +1,12 @@
 from flask import Flask,render_template,request,jsonify
-from sklearn.feature_extraction.text import TfidfVectorizer
+# from sklearn.feature_extraction.text import TfidfVectorizer
 from llm_chain import generate_response
+from flask_cors import CORS
+from workflow import callLLM
 app = Flask(__name__)
 
 
-
+CORS(app)
 
 def predict_emotion(message):
     return "happy"
@@ -20,7 +22,7 @@ def chat():
 
       emotion = predict_emotion(message)
 
-      print("shivam")
+    #   print("shivam")
       prompt = f"""
 You are an AI study assistant helping Indian competitive exam students preparing for GATE, UPSC, JEE, and CAT.
 
@@ -58,9 +60,9 @@ Student message:
 
 Now generate the best possible response.
 """
-      print("Shivam2")
-      response = generate_response(prompt)
-      print("shivam3")
+    #   print("Shivam2")
+      response = callLLM(prompt)
+    #   print("shivam3")
       return jsonify({"status":200,"data":response})
       
       

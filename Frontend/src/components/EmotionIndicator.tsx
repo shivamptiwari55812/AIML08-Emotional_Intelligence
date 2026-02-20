@@ -2,6 +2,9 @@ import { motion } from "framer-motion";
 
 type Emotion = "happy" | "focused" | "calm" | "stressed";
 
+// Default fallback emotion
+const DEFAULT_EMOTION: Emotion = "calm";
+
 const emotionConfig: Record<Emotion, { label: string; emoji: string; color: string }> = {
     happy: { label: "Happy", emoji: "😊", color: "bg-emotion-happy/20 text-emotion-happy border-emotion-happy/30" },
     focused: { label: "Focused", emoji: "🎯", color: "bg-emotion-focused/20 text-emotion-focused border-emotion-focused/30" },
@@ -9,8 +12,16 @@ const emotionConfig: Record<Emotion, { label: string; emoji: string; color: stri
     stressed: { label: "Stressed", emoji: "😰", color: "bg-emotion-stressed/20 text-emotion-stressed border-emotion-stressed/30" },
 };
 
-const EmotionIndicator = ({ emotion, size = "md" }: { emotion: Emotion; size?: "sm" | "md" }) => {
-    const config = emotionConfig[emotion];
+const EmotionIndicator = ({
+    emotion,
+    size = "md",
+}: {
+    emotion?: string; // allow any string to handle invalid values
+    size?: "sm" | "md";
+}) => {
+    // Use default if emotion is not valid
+    const config = emotionConfig[emotion as Emotion] || emotionConfig[DEFAULT_EMOTION];
+
     const sizeClasses = size === "sm" ? "px-2 py-1 text-xs" : "px-3 py-1.5 text-sm";
 
     return (
@@ -22,7 +33,7 @@ const EmotionIndicator = ({ emotion, size = "md" }: { emotion: Emotion; size?: "
             <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }}>
                 {config.emoji}
             </motion.span>
-            {config.label}
+            {emotion}
         </motion.div>
     );
 };

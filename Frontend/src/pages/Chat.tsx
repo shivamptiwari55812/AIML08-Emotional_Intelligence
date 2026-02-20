@@ -7,6 +7,7 @@ import Navbar from "../components/Navbar";
 import EmotionIndicator from "../components/EmotionIndicator";
 import TypingIndicator from "../components/TypingIndicator";
 import type { Emotion } from "../components/EmotionIndicator";
+import axios from "axios";
 
 interface Message {
     id: number;
@@ -38,21 +39,26 @@ const Chat = () => {
 
     useEffect(scrollToBottom, [messages, typing, scrollToBottom]);
 
-    const handleSend = () => {
+    const handleSend = async () => {
         if (!input.trim()) return;
         const userMsg: Message = { id: idRef.current++, text: input.trim(), sender: "user" };
         setMessages((prev) => [...prev, userMsg]);
         setInput("");
         setTyping(true);
+        const res = await axios.post("http://127.0.0.1:5000/chat", { message: userMsg.text });
+        console.log(JSON.parse(res.data.data));
+        const data = JSON.parse(res.data.data)
+        setMessages((prev) => [...prev, { id: idRef.current++, text: data.response, sender: "ai", emotion: data.emotion }]);
+        setTyping(false);
 
-        setTimeout(
-            () => {
-                const resp = aiResponses[Math.floor(Math.random() * aiResponses.length)];
-                setMessages((prev) => [...prev, { id: idRef.current++, text: resp.text, sender: "ai", emotion: resp.emotion }]);
-                setTyping(false);
-            },
-            1500 + Math.random() * 1000
-        );
+        // setTimeout(
+        //     () => {
+        //         const resp = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+        //         setMessages((prev) => [...prev, { id: idRef.current++, text: resp.text, sender: "ai", emotion: resp.emotion }]);
+        //         setTyping(false);
+        //     },
+        //     1500 + Math.random() * 1000
+        // );
     };
 
     return (
