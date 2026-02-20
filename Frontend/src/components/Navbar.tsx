@@ -5,6 +5,7 @@ import { useState } from "react";
 
 const navItems = [
     { path: "/", label: "Home", icon: BookOpen },
+      { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { path: "/chat", label: "Chat", icon: MessageCircle },
 ];
 
